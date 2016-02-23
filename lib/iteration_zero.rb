@@ -13,7 +13,6 @@ loop do
   end
   puts "Got this request:"
   puts request_lines.inspect
-  # Question - noticed that number goes up to 2, then goes back to one, even when we don't exit pry. Is that normal?
   puts "Sending response."
   response = "<pre>" + request_lines.join("\n") + "</pre>"
   output = "<html><head></head><body> Hello, World! (#{visited}) \n #{response}</body></html>"
