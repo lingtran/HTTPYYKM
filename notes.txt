@@ -1,0 +1,20 @@
+# instantiate listening to the server
+# set a visited counter to be updated with each visit to the server
+
+# within loop
+# allow client = whatever the server accepts
+# update the visited counter
+
+# confirm readiness for a request and takes in the lines fed to server until there are no more lines
+
+# inspect the lines and provide that as part of the response
+
+# In order to send response back
+# three variables == response, output (which prints out the response), headers
+# actually needs to print out header and output
+# also, instruct to print out headers and output
+# instruct to close
+
+# only have client has closed, can we stop the loop
+
+# confirmation message that it has ended 
