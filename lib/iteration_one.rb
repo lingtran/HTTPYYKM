@@ -19,8 +19,9 @@ loop do
 
 
   puts "Sending response."
-  response = "<pre>" + request_lines.join("\n") + "</pre>"
-  output = "<html><head></head><body> Hello, World! #{visited} \n #{response}</body></html>"
+  response = "<pre>" + "Hello World! (#{visited})" + "</pre>"
+
+  output = "<html><head></head><body>#{response}</body></html>"
   headers = ["http/1.1 200 ok",
              "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
              "server: ruby",

@@ -8,9 +8,3 @@ end
 
 response = conn.get '/'
 response.body
-
-# conn.get do |req|
-#   req.url '/hello'
-#   req.options.timeout = 5           # open/read timeout in seconds
-#   req.options.open_timeout = 2      # connection open timeout in seconds
-# end
