@@ -7,7 +7,8 @@ conn = Faraday.new(:url => 'http://127.0.0.1:9292') do |faraday|
 end
 
 response = conn.get '/'
-response.body
+puts response.body
+
 
 # conn.get do |req|
 #   req.url '/hello'

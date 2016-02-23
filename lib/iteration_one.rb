@@ -34,6 +34,7 @@ Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0
   client.puts headers
   client.puts output
   puts ["Wrote this response:", headers, output].join("\n")
-  client.close
 end
+client.close
+
 puts "\nRepsonse complete, exiting."
