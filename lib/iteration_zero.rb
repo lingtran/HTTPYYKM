@@ -27,5 +27,4 @@ loop do
   puts ["Wrote this response:", headers, output].join("\n")
   client.close
 end
-
 puts "\nRepsonse complete, exiting."
