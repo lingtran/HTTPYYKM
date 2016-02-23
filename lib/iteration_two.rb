@@ -48,7 +48,6 @@ class Server
 
   def close_the_server
     puts "\nRepsonse complete, exiting."
-    @client.close
   end
 
   def run_the_loop
@@ -59,6 +58,7 @@ class Server
     send_response
     close_the_server
     end
+    @client.close
   end
 end
 
