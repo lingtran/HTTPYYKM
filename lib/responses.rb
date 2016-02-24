@@ -39,7 +39,7 @@ module Responses
   def shutdown_response
     "<html><head></head><body> Total Requests: #{@visited}\n <pre>
     Verb: POST
-    Path: /datetime
+    Path: /shutdown
     Protocol: HTTP/1.1
     Host: 127.0.0.1
     Port: 9292
