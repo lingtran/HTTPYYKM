@@ -2,8 +2,9 @@ require 'pry'
 # require 'server'
 
 class RequestParser
+  include Responses
   attr_reader :client
-
+  
   def parse_request
     @client = Server.tcp_server.accept
     puts "Ready for a request!"

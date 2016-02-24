@@ -27,13 +27,13 @@ class ServerTest < Minitest::Test
 
   def test_response_with_root_path
     response = root_response
-    assert_equal root_response, Faraday.get('http://127.0.0.1:9292/').body
+    assert_equal response, Faraday.get('http://127.0.0.1:9292/').body
   end
 
   def test_response_with_hello
     @hello_counter = 1
     response = hello_response
-    assert_equal hello_response, Faraday.get('http://127.0.0.1:9292/hello').body
+    assert_equal response, Faraday.get('http://127.0.0.1:9292/hello').body
   end
 
   def test_multiple_responses_with_hello
@@ -47,7 +47,7 @@ class ServerTest < Minitest::Test
 
   def test_response_with_date_time
     response = datetime_response
-    assert_equal datetime_response, Faraday.get('http://127.0.0.1:9292/datetime').body
+    assert_equal response, Faraday.get('http://127.0.0.1:9292/datetime').body
   end
 
   def test_response_with_shutdown
@@ -60,9 +60,14 @@ class ServerTest < Minitest::Test
   end
 
   def test_response_diagnostics_can_be_dynamically_parsed
-    skip
+    @request_lines = ["GET / HTTP/1.1",
+ "User-Agent: Faraday v0.9.2",
+ "Accept-Encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+ "Accept: */*",
+ "Connection: close",
+ "Host: 127.0.0.1:9292"]
     response = root_response
-    assert_equal response, Faraday.get('http://127.0.0.1:9292/shutdown').body
+    assert_equal "GET", filtered_verb
   end
 
 
