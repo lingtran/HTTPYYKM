@@ -1,4 +1,6 @@
 require 'socket'
+require_relative 'request_parser'
+require 'pry'
 
 class Server
   def initialize
@@ -7,7 +9,7 @@ class Server
     @request_lines = []
     end
 
-  def get_request
+  def parse_request
     @client = @tcp_server.accept
     puts "Ready for a request!"
     while line = @client.gets and !line.chomp.empty?
@@ -32,7 +34,7 @@ class Server
       Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
       </pre>"
 
-    output = "<html><head></head><body> Hello, World! (#{@visited}) \n #{response}</body></html>"
+    output = "<html><head></  head><body> Hello, World! (#{@visited}) \n #{response}</body></html>"
 
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
@@ -49,7 +51,7 @@ class Server
   def run_the_loop
     loop do
     @visited += 1
-    get_request
+    parse_request
     prep_response
     send_response
     close_the_server

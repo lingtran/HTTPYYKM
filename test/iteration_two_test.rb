@@ -20,4 +20,21 @@ class ServerTest < Minitest::Test
     skip
   end
 
+  def test_response_with_root_path
+    skip
+  end
+
+  def test_response_with_hello
+    skip
+
+#     <pre>
+# Verb: POST
+# Path: /
+# Protocol: HTTP/1.1
+# Host: 127.0.0.1
+# Port: 9292
+# Origin: 127.0.0.1
+# Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+# </pre>
+  end
 end
