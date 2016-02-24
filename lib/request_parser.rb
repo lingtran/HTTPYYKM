@@ -1,7 +1,16 @@
 require 'pry'
-require 'server'
+# require 'server'
 
 class RequestParser
+  attr_reader :client
+
+  def parse_request
+    @client = Server.tcp_server.accept
+    puts "Ready for a request!"
+    while line = @client.gets and !line.chomp.empty?
+      @request_lines << line.chomp
+    end
+  end
   # take in request from client
   # parse out the response
   # inspect the path
