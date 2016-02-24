@@ -9,6 +9,7 @@ class ServerTest < Minitest::Test
   include Responses
   def setup
     @visited = 0
+    @hello_counter = 0
   end
 
   def test_server_can_receive_request
@@ -35,11 +36,25 @@ class ServerTest < Minitest::Test
   end
 
   def test_multiple_responses_with_hello
-    @visited = 5
+    @hello_counter = 5
     response = hello_response
     5.times do
       Faraday.get('http://127.0.0.1:9292/hello')
     end
     assert_equal response, Faraday.get('http://127.0.0.1:9292/hello').body
+  end
+
+  def test_response_with_date_time
+    response = datetime_response
+    assert_equal datetime_response, Faraday.get('http://127.0.0.1:9292/datetime').body
+  end
+
+  def test_response_with_shutdown
+    @visited = 5
+    response = shutdown_response
+    5.times do
+      Faraday.get('http://127.0.0.1:9292/hello')
+    end
+    assert_equal response, Faraday.get('http://127.0.0.1:9292/shutdown').body
   end
 end

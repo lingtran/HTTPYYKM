@@ -10,12 +10,14 @@ include Responses
   def initialize
     @tcp_server = TCPServer.new(9292)
     @visited = 0
+    @hello_counter = 0
     @request_lines = []
-    end
+  end
 
   def parse_request
     @client = tcp_server.accept
     puts "Ready for a request!"
+    @request_lines.clear
     while line = @client.gets and !line.chomp.empty?
       @request_lines << line.chomp
     end
@@ -29,6 +31,11 @@ include Responses
   def response
     if @request_lines.fetch(0).include?("/hello")
       hello_response
+      @hello_counter +=1
+    elsif  @request_lines.fetch(0).include?("/datetime")
+      datetime_response
+    elsif @request_lines.fetch(0).include?("/shutdown")
+      shutdown_response
     else
       root_response
     end
