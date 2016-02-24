@@ -45,7 +45,7 @@ class Server
 
   def send_response
     puts "Sending response."
-    output = "<html><head></head><body>#{response}</body></html>"
+    output = "<html><body>#{response}</body></html>"
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                "server: ruby",
@@ -70,9 +70,7 @@ class Server
     end
     close_the_server
     @client.close
-
   end
-
 end
 
 if __FILE__ == $0

@@ -26,7 +26,6 @@ module Responses
     end.map do |key, value|
       "#{key} #{value}\n"
     end.join.lstrip
-    # issue where the "verb" line gets indented when others don't
   end
 
 
@@ -42,36 +41,32 @@ module Responses
     @request_lines[0].split[2]
   end
 
-  def filtered_host # problem to resolve: the index of host changes depending on the client, need to find this and then split it
-    @request_lines[1].split(":")[1]
+  def filtered_host
+    @request_lines.find { |element| element if element.include?("Host:") }.split(":")[1].lstrip
   end
 
   def root_response
-    "<pre>#{response_diagnostics}</pre>"
+    "<pre>\n#{response_diagnostics}</pre>"
   end
 
   def hello_response
-    "<html><head></head><body>
-    Hello, World! (#{@hello_counter})\n
+    "<head>Hello, World! (#{@hello_counter})\n</head>
     <pre>
-    #{response_diagnostics}
-    </pre>
-    </body></html>"
+     \n#{response_diagnostics}
+    </pre>"
   end
 
   def datetime_response
-    "<html><head></head><body>
-    #{Time.now.strftime("%I:%M%p on %A, %B %e, %Y")}\n
+    "#{Time.now.strftime("%I:%M%p on %A, %B %e, %Y")}\n
     <pre>
-    #{response_diagnostics}
-    </pre>
-    </body></html>"
+    \n#{response_diagnostics}
+    </pre>"
   end
 
   def shutdown_response
-    "<html><head></head><body> Total Requests: #{@visited}\n <pre>
-    #{response_diagnostics}
-    </pre><
-    /body></html>"
+    "<head>Total Requests: #{@visited}\n</head>
+    <pre>
+    \n#{response_diagnostics}
+    </pre>"
   end
 end
