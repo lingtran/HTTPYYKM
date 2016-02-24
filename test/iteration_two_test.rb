@@ -8,7 +8,7 @@ require 'minitest/pride'
 class ServerTest < Minitest::Test
 
   def test_server_can_receive_request
-    response = Faraday.get 'http://127.0.0.1:9292'
+    response = Faraday.get 'http://127.0.0.1:9292/'
     assert response.success?
   end
 
