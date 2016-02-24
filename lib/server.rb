@@ -4,11 +4,12 @@ require 'pry'
 require_relative 'responses'
 
 class Server
-include Responses
+  include Responses
   attr_reader :tcp_server
 
   def initialize
-    @tcp_server = TCPServer.new(9292)
+    @port = 9292
+    @tcp_server = TCPServer.new(@port)
     @visited = 0
     @hello_counter = 0
     @request_lines = []
@@ -29,12 +30,13 @@ include Responses
   end
 
   def response
-    if @request_lines.fetch(0).include?("/hello")
-      hello_response
+    path_finder = @request_lines.fetch(0)
+    if path_finder.include?("/hello")
       @hello_counter +=1
-    elsif  @request_lines.fetch(0).include?("/datetime")
+      hello_response
+    elsif path_finder.include?("/datetime")
       datetime_response
-    elsif @request_lines.fetch(0).include?("/shutdown")
+    elsif path_finder.include?("/shutdown")
       shutdown_response
     else
       root_response
@@ -43,17 +45,19 @@ include Responses
 
   def send_response
     puts "Sending response."
-    output = "#{response}"
+    output = "<html><head></head><body>#{response}</body></html>"
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                "server: ruby",
                "content-type: text/html; charset=iso-8859-1",
                "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+    @client.puts headers
+    @client.puts output
+   puts ["Wrote this response:", headers, output].join("\n")
+  end
 
-   @client.puts headers
-   @client.puts output
-
-  puts ["Wrote this response:", headers, output].join("\n")
+  def close_the_server
+    puts "\nResponse complete, exiting."
   end
 
   def run_the_loop
@@ -61,14 +65,12 @@ include Responses
       parse_request
       inspect_request
       send_response
-      close_the_server
       @visited += 1
-      @client.close
+      break if @request_lines[0].include?("/shutdown")
     end
-  end
+    close_the_server
+    @client.close
 
-  def close_the_server
-    puts "\nResponse complete, exiting."
   end
 
 end

@@ -1,5 +1,5 @@
 require 'faraday'
-require '../lib/client'
+# require '../lib/client'
 require '../lib/server'
 require '../lib/responses'
 require 'minitest/autorun'
@@ -31,12 +31,13 @@ class ServerTest < Minitest::Test
   end
 
   def test_response_with_hello
+    @hello_counter = 1
     response = hello_response
     assert_equal hello_response, Faraday.get('http://127.0.0.1:9292/hello').body
   end
 
   def test_multiple_responses_with_hello
-    @hello_counter = 5
+    @hello_counter = 7
     response = hello_response
     5.times do
       Faraday.get('http://127.0.0.1:9292/hello')
@@ -50,11 +51,19 @@ class ServerTest < Minitest::Test
   end
 
   def test_response_with_shutdown
-    @visited = 5
+    @visited = 13
     response = shutdown_response
     5.times do
       Faraday.get('http://127.0.0.1:9292/hello')
     end
     assert_equal response, Faraday.get('http://127.0.0.1:9292/shutdown').body
   end
+
+  def test_response_diagnostics_can_be_dynamically_parsed
+    skip
+    response = root_response
+    assert_equal response, Faraday.get('http://127.0.0.1:9292/shutdown').body
+  end
+
+
 end
