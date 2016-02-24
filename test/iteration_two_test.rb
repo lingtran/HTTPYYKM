@@ -1,14 +1,19 @@
 require 'faraday'
-require '../lib/iteration_two_client'
-require '../lib/iteration_two_server'
+require '../lib/client'
+require '../lib/server'
+require '../lib/responses'
 require 'minitest/autorun'
 require 'minitest/pride'
 
-
 class ServerTest < Minitest::Test
+  include Responses
+  def setup
+    @visited = 0
+    @hello_counter = 0
+  end
 
   def test_server_can_receive_request
-    response = Faraday.get 'http://127.0.0.1:9292'
+    response = Faraday.get 'http://127.0.0.1:9292/'
     assert response.success?
   end
 
@@ -20,4 +25,36 @@ class ServerTest < Minitest::Test
     skip
   end
 
+  def test_response_with_root_path
+    response = root_response
+    assert_equal root_response, Faraday.get('http://127.0.0.1:9292/').body
+  end
+
+  def test_response_with_hello
+    response = hello_response
+    assert_equal hello_response, Faraday.get('http://127.0.0.1:9292/hello').body
+  end
+
+  def test_multiple_responses_with_hello
+    @hello_counter = 5
+    response = hello_response
+    5.times do
+      Faraday.get('http://127.0.0.1:9292/hello')
+    end
+    assert_equal response, Faraday.get('http://127.0.0.1:9292/hello').body
+  end
+
+  def test_response_with_date_time
+    response = datetime_response
+    assert_equal datetime_response, Faraday.get('http://127.0.0.1:9292/datetime').body
+  end
+
+  def test_response_with_shutdown
+    @visited = 5
+    response = shutdown_response
+    5.times do
+      Faraday.get('http://127.0.0.1:9292/hello')
+    end
+    assert_equal response, Faraday.get('http://127.0.0.1:9292/shutdown').body
+  end
 end

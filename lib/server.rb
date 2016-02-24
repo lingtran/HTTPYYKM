@@ -1,39 +1,49 @@
 require 'socket'
+# require_relative 'request_parser'
+require 'pry'
+require_relative 'responses'
 
 class Server
+include Responses
+  attr_reader :tcp_server
+
   def initialize
     @tcp_server = TCPServer.new(9292)
     @visited = 0
+    @hello_counter = 0
     @request_lines = []
-    end
+  end
 
-  def get_request
-    @client = @tcp_server.accept
+  def parse_request
+    @client = tcp_server.accept
     puts "Ready for a request!"
+    @request_lines.clear
     while line = @client.gets and !line.chomp.empty?
       @request_lines << line.chomp
     end
   end
 
-  def prep_response
+  def inspect_request
     puts "Got this request:"
     puts @request_lines.inspect
   end
 
+  def response
+    if @request_lines.fetch(0).include?("/hello")
+      hello_response
+      @hello_counter +=1
+    elsif  @request_lines.fetch(0).include?("/datetime")
+      datetime_response
+    elsif @request_lines.fetch(0).include?("/shutdown")
+      shutdown_response
+    else
+      root_response
+    end
+  end
+
   def send_response
     puts "Sending response."
-    response = "<pre>
-      Verb: POST
-      Path: /
-      Protocol: HTTP/1.1
-      Host: 127.0.0.1
-      Port: 9292
-      Origin: 127.0.0.1
-      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-      </pre>"
-
-    output = "<html><head></head><body> Hello, World! (#{@visited}) \n #{response}</body></html>"
-
+    output = "#{response}"
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                "server: ruby",
@@ -48,17 +58,17 @@ class Server
 
   def run_the_loop
     loop do
-    @visited += 1
-    get_request
-    prep_response
-    send_response
-    close_the_server
-    @client.close
+      parse_request
+      inspect_request
+      send_response
+      close_the_server
+      @visited += 1
+      @client.close
     end
   end
 
   def close_the_server
-    puts "\nRepsonse complete, exiting."
+    puts "\nResponse complete, exiting."
   end
 
 end
