@@ -75,4 +75,14 @@ class ServerTest < Minitest::Test
     assert_equal "127.0.0.1", filtered_host
   end
 
+  def test_response_with_single_word_search
+    @request_lines = word_search_request
+    assert_equal "/word_search?word=cat", filtered_path
+  end
+
+  def test_it_can_find_a_word_from_the_path
+    @request_lines = word_search_request
+    assert_equal "word", parameter
+    assert_equal "cat", value
+  end
 end
