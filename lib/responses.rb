@@ -1,5 +1,4 @@
 module Responses
-
   def response_diagnostics
     diagnostics = { "Verb:" => "",
                     "Path:" => "",
@@ -27,7 +26,6 @@ module Responses
       "#{key} #{value}\n"
     end.join.lstrip
   end
-
 
   def filtered_verb
     @request_lines[0].split[0]

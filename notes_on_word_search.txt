@@ -1,0 +1,31 @@
+we need a new path /word_search
+
+filtered verb will always be GET
+
+new parameter taken called "word"
+http://host:port/path?param=value&param2=value2
+
+http://127.0.0.1:9292/word_search?word=value
+
+def word_search
+
+
+the value for this parameter could be a fragment
+path is going to include the word
+
+word_search = word.value
+
+will need to require "../usr/share/dict/words"
+
+file for parameters
+take it in .downcase
+
+output:
+
+if words.include? == true
+
+  WORD is a known word
+  "#{word.upcase} is a known word"
+
+  WORD is not a known word
+  "#{word.upcase} is not a known word"
