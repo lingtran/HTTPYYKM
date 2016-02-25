@@ -36,7 +36,8 @@ class Server
       hello_response
     elsif path_finder.include?("/datetime")
       datetime_response
-    # elsif word_search
+    elsif path_finder.include?("/word_search")
+      word_search_response
     elsif path_finder.include?("/shutdown")
       shutdown_response
     else
