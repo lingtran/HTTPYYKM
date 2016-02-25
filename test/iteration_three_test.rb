@@ -13,25 +13,40 @@ class ServerTest < Minitest::Test
     @hello_counter = 0
   end
 
-  def test_server_can_receive_request
+  def test_server_can_receive_request_for_root
     response = Faraday.get 'http://127.0.0.1:9292/'
     assert response.success?
   end
 
+  def test_server_can_receive_request_for_hello
+    response = Faraday.get 'http://127.0.0.1:9292/hello'
+    assert response.success?
+  end
+
+  def test_server_can_receive_request_datetime
+    response = Faraday.get 'http://127.0.0.1:9292/datetime'
+    assert response.success?
+  end
+
+  def test_server_can_receive_request_word_search
+    response = Faraday.get 'http://127.0.0.1:9292/word_search?word=cat'
+    assert response.success?
+  end
+
   def test_response_with_root_path
-    skip
-    response = root_response
-    assert_equal response, Faraday.get('http://127.0.0.1:9292/').body
+    response = "Path: /"
+    assert Faraday.get('http://127.0.0.1:9292/').body.include?(response)
   end
 
   def test_response_with_hello
-    skip
-    @hello_counter = 1
-    response = hello_response
-    assert_equal response, Faraday.get('http://127.0.0.1:9292/hello').body
+    response_1 = "Hello, World!"
+    response_2 = "Path: /hello"
+    assert Faraday.get('http://127.0.0.1:9292/hello').body.include?(response_1)
+    assert Faraday.get('http://127.0.0.1:9292/hello').body.include?(response_2)
+
   end
 
-  def test_multiple_responses_with_hello
+  def test_multiple_responses_with_hello # unit test hello counter
     skip
     @hello_counter = 7
     response = hello_response
@@ -42,17 +57,14 @@ class ServerTest < Minitest::Test
   end
 
   def test_response_with_date_time
-    response = datetime_response
-    assert_equal response, Faraday.get('http://127.0.0.1:9292/datetime').body
+    response = "Path: /datetime"
+    assert Faraday.get('http://127.0.0.1:9292/datetime').body.include?(response)
   end
 
   def test_response_with_shutdown
-    @visited = 13
-    response = shutdown_response
-    5.times do
-      Faraday.get('http://127.0.0.1:9292/hello')
-    end
-    assert_equal response, Faraday.get('http://127.0.0.1:9292/shutdown').body
+    skip #make new file for testing shutdown
+    response = "Total Requests:"
+    assert Faraday.get('http://127.0.0.1:9292/shutdown').body.include?(response)
   end
 
   def test_verifying_shutdown_path
@@ -77,12 +89,21 @@ class ServerTest < Minitest::Test
 
   def test_response_with_single_word_search
     @request_lines = word_search_request
-    assert_equal "/word_search?word=cat", filtered_path
+    assert_equal "/word_search", filtered_path
   end
 
-  def test_it_can_find_a_word_from_the_path
+  def test_word_search_parameter_and_value_can_be_parsed
     @request_lines = word_search_request
-    assert_equal "word", parameter
-    assert_equal "cat", value
+    assert_equal "word", parsed_param
+    assert_equal "cat", parsed_value
   end
+
+  def test_word_search_value_can_be_verified_in_dictionary
+    @request_lines = word_search_request
+    assert_equal "CAT is a known word", word_value_verification
+
+    @request_lines = word_search_request_2
+    assert_equal "PAWSOME is not a known word", word_value_verification
+  end
+
 end
