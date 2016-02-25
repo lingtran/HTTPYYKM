@@ -24,7 +24,7 @@ class Server
     end
   end
 
-# @client.read(138)
+# @client.read(138) insert somewhere 
   def inspect_request
     puts "Got this request:"
     puts @request_lines.inspect
@@ -32,15 +32,15 @@ class Server
 
   def assign_response
     path_finder = @request_lines.fetch(0)
-    if path_finder.include?("/hello")
+    if path_finder.include?("/shutdown")
+      shutdown_response
+    elsif path_finder.include?("/hello")
       @hello_counter +=1 # counter is going in odds AGAIN. investigate why.
       hello_response
     elsif path_finder.include?("/datetime")
       datetime_response
     elsif path_finder.include?("/word_search")
       word_search_response
-    elsif path_finder.include?("/shutdown")
-      shutdown_response
     # elsif game counter response
     # elsif other game response
     else
@@ -71,7 +71,7 @@ class Server
       inspect_request
       send_response
       @visited += 1
-      break if assign_response == shutdown_response
+      break if @request_lines.fetch(0).include?("/shutdown")
     end
     close_the_server
     @client.close
