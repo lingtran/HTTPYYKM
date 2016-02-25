@@ -41,7 +41,7 @@ class ServerTest < Minitest::Test
 
   def test_can_filter_host
     @request_lines = root_request
-    assert_equal "127.0.0.1", filtered_host
+    assert_equal "127.0.0.1", filter_host
   end
 
   def test_can_filter_word_search_path
