@@ -20,8 +20,9 @@ class Server
     @client = tcp_server.accept
     puts "Ready for a request!"
     @request_lines.clear
-    while line = @client.gets and !line.chomp.empty?
+    while line = @client.gets
       @request_lines << line.chomp
+      binding.pry
     end
   end
 
@@ -42,6 +43,8 @@ class Server
       datetime_response
     elsif path_finder.include?("/word_search")
       word_search_response
+    elsif path_finder.include?("/start_game")
+      start_game_response
     # elsif game counter response
     # elsif other game response
     else
@@ -51,7 +54,7 @@ class Server
 
   def send_response
     puts "Sending response."
-    output = "<html><body>#{argument}</body></html>"
+    output = "<html><body>#{assign_response}</body></html>"
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                "server: ruby",

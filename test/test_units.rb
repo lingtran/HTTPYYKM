@@ -33,6 +33,9 @@ class ServerTest < Minitest::Test
   def test_can_filter_verb
     @request_lines = root_request
     assert_equal "GET", filter_verb
+
+    @request_lines = start_game_request
+    assert_equal "POST", filter_verb
   end
 
   def test_can_filter_protocol
@@ -65,6 +68,7 @@ class ServerTest < Minitest::Test
   end
 
   def test_can_filter_start_game_path
-    skip
+    @request_lines = start_game_request
+    assert_equal "/start_game", filter_path
   end
 end

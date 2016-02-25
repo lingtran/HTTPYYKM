@@ -67,4 +67,15 @@ module Responses
     \n#{response_diagnostics}
     </pre>"
   end
+
+  def start_game_response
+    "<head><b> Good luck!</b>\n</head>
+    <pre>
+    \n#{response_diagnostics}
+    </pre>"
+  end
+
+  def game_stat_response
+
+  end
 end
