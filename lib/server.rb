@@ -24,6 +24,7 @@ class Server
     end
   end
 
+# @client.read(138)
   def inspect_request
     puts "Got this request:"
     puts @request_lines.inspect
@@ -76,6 +77,7 @@ class Server
     @client.close
   end
 end
+
 
 if __FILE__ == $0
   server = Server.new
