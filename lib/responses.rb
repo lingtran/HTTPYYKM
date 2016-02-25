@@ -32,7 +32,12 @@ module Responses
   end
 
   def filtered_path
-    @request_lines[0].split[1]
+    filtered_path = @request_lines[0].split[1]
+    if filtered_path.split("?")[0].include?("/word_search")
+      filtered_path = filtered_path.split("?")[0]
+    else
+      filtered_path
+    end
   end
 
   def filtered_protocol
@@ -41,6 +46,23 @@ module Responses
 
   def filtered_host
     @request_lines.find { |element| element if element.include?("Host:") }.split(":")[1].lstrip
+  end
+
+  def parsed_param
+    @request_lines[0].split[1].split("?")[1].split("=")[0]
+  end
+
+  def parsed_value
+    @request_lines[0].split[1].split("?")[1].split("=")[1].downcase
+  end
+
+  def word_value_verification
+    dictionary = File.readlines("/usr/share/dict/words")
+    if dictionary.any? { |word| word.include?(parsed_value) }
+      "#{parsed_value.upcase} is a known word"
+    else
+      "#{parsed_value.upcase} is not a known word"
+    end
   end
 
   def root_response
@@ -55,7 +77,7 @@ module Responses
   end
 
   def datetime_response
-    "#{Time.now.strftime("%I:%M%p on %A, %B %e, %Y")}\n
+    "<head>#{Time.now.strftime("%I:%M%p on %A, %B %e, %Y")}\n</head>
     <pre>
     \n#{response_diagnostics}
     </pre>"
@@ -64,6 +86,13 @@ module Responses
   def shutdown_response
     "<head>Total Requests: #{@visited}\n</head>
     <pre>
+    \n#{response_diagnostics}
+    </pre>"
+  end
+
+  def word_search_response
+    "<pre>
+    \n #{word_value_verification}
     \n#{response_diagnostics}
     </pre>"
   end

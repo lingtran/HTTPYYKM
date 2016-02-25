@@ -23,11 +23,11 @@ class Server
       @request_lines << line.chomp
     end
   end
-
-  def inspect_request
-    puts "Got this request:"
-    puts @request_lines.inspect
-  end
+  #
+  # def inspect_request
+  #   puts "Got this request:"
+  #   puts @request_lines.inspect
+  # end
 
   def response
     path_finder = @request_lines.fetch(0)
@@ -36,6 +36,8 @@ class Server
       hello_response
     elsif path_finder.include?("/datetime")
       datetime_response
+    elsif path_finder.include?("/word_search")
+      word_search_response
     elsif path_finder.include?("/shutdown")
       shutdown_response
     else
@@ -63,7 +65,7 @@ class Server
   def run_the_loop
     loop do
       parse_request
-      inspect_request
+      # inspect_request
       send_response
       @visited += 1
       break if @request_lines[0].include?("/shutdown")
