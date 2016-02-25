@@ -1,7 +1,8 @@
 require 'faraday'
 # require '../lib/client'
 require '../lib/server'
-require '../lib/filters_responses'
+require '../lib/filters'
+require '../lib/responses'
 require 'minitest/autorun'
 require 'minitest/pride'
 require_relative 'request_lines'
@@ -61,5 +62,9 @@ class ServerTest < Minitest::Test
 
     @request_lines = word_search_request_2
     assert_equal "PAWSOME is not a known word", word_value_verification
+  end
+
+  def test_can_filter_start_game_path
+    skip
   end
 end

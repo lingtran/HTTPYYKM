@@ -1,7 +1,8 @@
 require 'socket'
 # require_relative 'request_parser'
 require 'pry'
-require_relative 'filters_responses'
+require_relative 'filters'
+require_relative 'responses'
 
 class Server
   include Responses, Filters
@@ -24,10 +25,10 @@ class Server
     end
   end
 
-# @client.read(138) insert somewhere 
   def inspect_request
     puts "Got this request:"
     puts @request_lines.inspect
+    # puts @client.read(138)
   end
 
   def assign_response
@@ -35,7 +36,7 @@ class Server
     if path_finder.include?("/shutdown")
       shutdown_response
     elsif path_finder.include?("/hello")
-      @hello_counter +=1 # counter is going in odds AGAIN. investigate why.
+      @hello_counter +=1
       hello_response
     elsif path_finder.include?("/datetime")
       datetime_response
@@ -50,7 +51,7 @@ class Server
 
   def send_response
     puts "Sending response."
-    output = "<html><body>#{assign_response}</body></html>"
+    output = "<html><body>#{argument}</body></html>"
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                "server: ruby",

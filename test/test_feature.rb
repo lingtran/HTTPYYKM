@@ -1,7 +1,8 @@
 require 'faraday'
 # require '../lib/client'
 require '../lib/server'
-require '../lib/filters_responses'
+require '../lib/filters'
+require '../lib/responses'
 require 'minitest/autorun'
 require 'minitest/pride'
 require_relative 'request_lines'
@@ -51,5 +52,21 @@ class ServerTest < Minitest::Test
     skip #make new file for testing shutdown
     response = "Total Requests:"
     assert Faraday.get('http://127.0.0.1:9292/shutdown').body.include?(response)
+  end
+
+  def test_response_to_start_game
+    skip
+    # should print "Good luck!" and direct to start game?
+  end
+
+  def test_response_for_game
+    skip
+    # how many gueses have been taken (default ot 0)
+    # tell what guess has been made if value is there, and its accuracy (too high, too low, or correct) -- perhaps need key-value to have various responses for input value
+  end
+
+  def test_response_for_game_play
+    skip
+    # someone manually redirects?
   end
 end
