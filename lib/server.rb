@@ -1,10 +1,10 @@
 require 'socket'
 # require_relative 'request_parser'
 require 'pry'
-require_relative 'responses'
+require_relative 'filters_responses'
 
 class Server
-  include Responses
+  include Responses, Filters
   attr_reader :tcp_server
 
   def initialize
@@ -15,7 +15,7 @@ class Server
     @request_lines = []
   end
 
-  def parse_request
+  def accept_request
     @client = tcp_server.accept
     puts "Ready for a request!"
     @request_lines.clear
@@ -23,16 +23,16 @@ class Server
       @request_lines << line.chomp
     end
   end
-  #
-  # def inspect_request
-  #   puts "Got this request:"
-  #   puts @request_lines.inspect
-  # end
 
-  def response
+  def inspect_request
+    puts "Got this request:"
+    puts @request_lines.inspect
+  end
+
+  def assign_response
     path_finder = @request_lines.fetch(0)
     if path_finder.include?("/hello")
-      @hello_counter +=1
+      @hello_counter +=1 # counter is going in odds AGAIN. investigate why.
       hello_response
     elsif path_finder.include?("/datetime")
       datetime_response
@@ -40,6 +40,8 @@ class Server
       word_search_response
     elsif path_finder.include?("/shutdown")
       shutdown_response
+    # elsif game counter response
+    # elsif other game response
     else
       root_response
     end
@@ -47,7 +49,7 @@ class Server
 
   def send_response
     puts "Sending response."
-    output = "<html><body>#{response}</body></html>"
+    output = "<html><body>#{assign_response}</body></html>"
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                "server: ruby",
@@ -55,7 +57,7 @@ class Server
                "content-length: #{output.length}\r\n\r\n"].join("\r\n")
     @client.puts headers
     @client.puts output
-   puts ["Wrote this response:", headers, output].join("\n")
+    puts ["Wrote this response:", headers, output].join("\n")
   end
 
   def close_the_server
@@ -64,11 +66,11 @@ class Server
 
   def run_the_loop
     loop do
-      parse_request
-      # inspect_request
+      accept_request
+      inspect_request
       send_response
       @visited += 1
-      break if @request_lines[0].include?("/shutdown")
+      break if assign_response == shutdown_response
     end
     close_the_server
     @client.close
