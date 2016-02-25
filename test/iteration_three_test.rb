@@ -105,5 +105,4 @@ class ServerTest < Minitest::Test
     @request_lines = word_search_request_2
     assert_equal "PAWSOME is not a known word", word_value_verification
   end
-
 end

@@ -1,3 +1,34 @@
+module Filters
+  def filter_verb
+    @request_lines[0].split[0]
+  end
+
+  def filter_path
+    filter_path = @request_lines[0].split[1]
+    if filter_path.split("?")[0].include?("/word_search")
+      filter_path = filter_path.split("?")[0]
+    else
+      filter_path
+    end
+  end
+
+  def filter_protocol
+    @request_lines[0].split[2]
+  end
+
+  def filter_host
+    @request_lines.find { |element| element if element.include?("Host:") }.split(":")[1].lstrip
+  end
+
+  def filter_parameter
+    @request_lines[0].split[1].split("?")[1].split("=")[0]
+  end
+
+  def filter_value
+    @request_lines[0].split[1].split("?")[1].split("=")[1].downcase
+  end
+end
+
 module Responses
   def response_diagnostics
     diagnostics = { "Verb:" => "",
@@ -10,13 +41,13 @@ module Responses
                   }
     diagnostics.each_pair do |key, value|
       if key == "Verb:"
-        diagnostics[key] = filtered_verb
+        diagnostics[key] = filter_verb
       elsif key == "Path:"
-        diagnostics[key] = filtered_path
+        diagnostics[key] = filter_path
       elsif key == "Protocol:"
-        diagnostics[key] = filtered_protocol
+        diagnostics[key] = filter_protocol
       elsif key == "Host:" || key == "Origin:"
-        diagnostics[key] = filtered_host
+        diagnostics[key] = filter_host
       elsif key == "Port:"
         diagnostics[key] = @port
       else
@@ -27,41 +58,12 @@ module Responses
     end.join.lstrip
   end
 
-  def filtered_verb
-    @request_lines[0].split[0]
-  end
-
-  def filtered_path
-    filtered_path = @request_lines[0].split[1]
-    if filtered_path.split("?")[0].include?("/word_search")
-      filtered_path = filtered_path.split("?")[0]
-    else
-      filtered_path
-    end
-  end
-
-  def filtered_protocol
-    @request_lines[0].split[2]
-  end
-
-  def filtered_host
-    @request_lines.find { |element| element if element.include?("Host:") }.split(":")[1].lstrip
-  end
-
-  def parsed_param
-    @request_lines[0].split[1].split("?")[1].split("=")[0]
-  end
-
-  def parsed_value
-    @request_lines[0].split[1].split("?")[1].split("=")[1].downcase
-  end
-
   def word_value_verification
     dictionary = File.readlines("/usr/share/dict/words")
-    if dictionary.any? { |word| word.include?(parsed_value) }
-      "#{parsed_value.upcase} is a known word"
+    if dictionary.any? { |word| word.include?(filter_value) }
+      "#{filter_value.upcase} is a known word"
     else
-      "#{parsed_value.upcase} is not a known word"
+      "#{filter_value.upcase} is not a known word"
     end
   end
 
@@ -70,7 +72,7 @@ module Responses
   end
 
   def hello_response
-    "<head>Hello, World! (#{@hello_counter})\n</head>
+    "<head> Hello, World! (#{@hello_counter})\n</head>
     <pre>
      \n#{response_diagnostics}
     </pre>"
