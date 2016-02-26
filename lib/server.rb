@@ -73,10 +73,6 @@ class Server
     end
   end
 
-  def assign_game_response(var)
-
-  end
-
   def close_the_server
     puts "\nResponse complete, exiting."
   end

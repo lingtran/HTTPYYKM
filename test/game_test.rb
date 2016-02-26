@@ -2,8 +2,10 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require_relative 'fake_game_request_lines'
 require '../lib/game'
+require '../lib/server'
 require 'pry'
 
+# need to adjust tests due to changes in game class
 class GameTest < Minitest::Test
   include FakeGameRequestLines
   def test_a_new_instance_of_Game_can_be_created
