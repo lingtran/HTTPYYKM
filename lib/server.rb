@@ -22,7 +22,7 @@ class Server
     @request_lines.clear
     while line = @client.gets
       @request_lines << line.chomp
-      binding.pry
+
     end
   end
 
@@ -47,6 +47,7 @@ class Server
       start_game_response
     # elsif game counter response
     # elsif other game response
+    # guess gets request lines to parse guess, sends to game class
     else
       root_response
     end
