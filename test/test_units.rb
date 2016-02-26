@@ -1,13 +1,15 @@
 require 'faraday'
 # require '../lib/client'
 require '../lib/server'
-require '../lib/filters_responses'
+require '../lib/filters'
+require '../lib/responses'
+require '../lib/redirect'
 require 'minitest/autorun'
 require 'minitest/pride'
 require_relative 'request_lines'
 
 class ServerTest < Minitest::Test
-  include Responses, Filters, RequestLines
+  include Responses, Filters, RequestLines, Redirect
 
   def setup
     @visited = 0
@@ -32,6 +34,9 @@ class ServerTest < Minitest::Test
   def test_can_filter_verb
     @request_lines = root_request
     assert_equal "GET", filter_verb
+
+    @request_lines = start_game_request
+    assert_equal "POST", filter_verb
   end
 
   def test_can_filter_protocol
@@ -62,4 +67,17 @@ class ServerTest < Minitest::Test
     @request_lines = word_search_request_2
     assert_equal "PAWSOME is not a known word", word_value_verification
   end
+
+  def test_can_filter_start_game_path
+    @request_lines = start_game_request
+    assert_equal "/start_game", filter_path
+  end
+
+  def test_status_code_for_start_game
+    skip
+    # want to figure out a way to verify status code 
+    @request_lines = start_game_request
+    assert Faraday.post('http://127.0.0.1:9292/start_game').body.include?("302 Found")
+  end
+
 end
