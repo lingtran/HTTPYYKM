@@ -18,6 +18,7 @@ class GameTest < Minitest::Test
 
   def test_it_can_count_guesses_made
     # skip
+      @base_number = 15
     game_1 = Game.new(fake_game_request_lines1)
     first_guess = game_1.guess_getter(fake_game_request_lines1)
       game_1.guess_stored(first_guess)
@@ -29,6 +30,7 @@ class GameTest < Minitest::Test
 
   def test_it_can_return_guess_number
     # skip
+    @base_number = 15
     game_1 = Game.new(fake_game_request_lines1)
     first_guess = game_1.guess_getter(fake_game_request_lines1)
     second_guess = game_1.guess_getter(fake_game_request_lines2)
@@ -40,19 +42,23 @@ class GameTest < Minitest::Test
   def test_it_can_evaluate_guess_number
     # skip
     try1 = Game.new(fake_game_request_lines1)
-
+    @base_number = 15
     first_guess = try1.guess_getter(fake_game_request_lines1)
+    binding.pry
       eval_1 = try1.evaluate_number(first_guess)
 
     try2 = Game.new(fake_game_request_lines2)
+    @base_number = 15
     second_guess = try2.guess_getter(fake_game_request_lines2)
       eval_2 = try2.evaluate_number(second_guess)
 
     try3 = Game.new(fake_game_request_lines3)
+    @base_number = 15
     third_guess = try3.guess_getter(fake_game_request_lines3)
       eval_3 = try3.evaluate_number(third_guess)# guess is "10000"
 
     try4 = Game.new(fake_game_request_lines4)
+    @base_number = 15
       bad_guess = try3.guess_getter(fake_game_request_lines4)
         eval_4 = try3.evaluate_number(bad_guess) # guess is "_"
 
