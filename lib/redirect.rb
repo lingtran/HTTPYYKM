@@ -11,7 +11,7 @@ module Redirect
     headers.insert(1, game_location) if @status_code == "302 Found"
 
     headers = headers.join("\r\n")
-    
+
     @client.puts headers
     @client.puts output
     puts ["Wrote this response:", headers, output].join("\n")
