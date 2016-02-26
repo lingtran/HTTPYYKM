@@ -76,7 +76,7 @@ module Responses
     </pre>"
   end
 
-  def initial_game_response
+  def initial_game_response(request_lines = nil, client)
     num_eval = @game.evaluate_number(@request_lines, @client)
     "<head><b><u>Here are the game stats:</u></b>\n</head>
     <pre>
@@ -90,13 +90,12 @@ module Responses
 
   def get_game_response
     num_eval = @game.evaluate_number(@request_lines, @client)
-    guesses = @game.guesses_made.join(", ")
-    recent_guess = @game.guess.join
+    recent_guess = @game.guess_stored(guess)
     "<head><b><u>Here are the game stats:</u></b>\n</head>
     <pre>
     \n#{num_eval}
     \nMost recent guess: #{recent_guess}
-    \nGuesses made: #{guesses}
+    \nGuess attempts: #{@game_attempts}
     \n
     \n#{response_diagnostics}
     </pre>"

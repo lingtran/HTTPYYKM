@@ -5,8 +5,8 @@ require_relative 'responses'
 require_relative 'redirect'
 require_relative 'game'
 
-class Server
-  include Responses, Filters
+class Server < Game
+  include Responses, Filters, Redirect
 
   attr_reader :tcp_server, :client, :request_lines
 
@@ -35,28 +35,6 @@ class Server
     # puts @client.read(138)
   end
 
-  def send_response
-    puts "Sending response."
-    output = "<html><body>#{assign_response}</body></html>"
-    headers = ["http/1.1 #{@status_code}",
-               "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
-               "server: ruby",
-               "content-type: text/html; charset=iso-8859-1",
-               "content-length: #{output.length}\r\n\r\n"]
-
-    headers.insert(1, game_location) if @status_code == "302 Found"
-
-    headers = headers.join("\r\n")
-
-    @client.puts headers
-    @client.puts output
-    puts ["Wrote this response:", headers, output].join("\n")
-  end
-
-  def game_location
-    "Location: http://127.0.0.1:9292/game"
-  end
-
   def assign_response
     if filter_path == "/shutdown"
       @status_code = "200 ok"
@@ -72,21 +50,19 @@ class Server
       @status_code = "200 ok"
       word_search_response
     elsif filter_path == "/start_game"
-      @status_code = "302 Found"
-      start_game_response
-            # initialize a new game, store it in an instance variable
-    elsif filter_verb == "GET" && filter_path == "/game"
       @status_code = "200 ok"
-      if @game_attempts == 0
+      start_game_response
+    elsif filter_path == "/game"
+      @status_code = "200 ok"
+      if @game_attempts < 0
         initial_game_response
-      elsif @game_attempts >= 1
+      elsif @game_attempts > 1
         get_game_response
       end
     elsif filter_verb == "POST" && filter_path.start_with?("/game?")
       @game_attempts += 1
       @status_code = "302 Found"
       get_game_response
-      # use intance variable to evaluate number by passing in request lines
     else
       @status_code = "200 ok"
       root_response
