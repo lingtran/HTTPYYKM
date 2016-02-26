@@ -49,4 +49,3 @@ Interaction model
 - player puts in guess key and value (guess param, number)
 - redirects client (POSTMAN) to go to GET > /game
 - player can see stats which includes their guess, accuracy, and total number of guesses
--

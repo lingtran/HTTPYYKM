@@ -1,6 +1,6 @@
 module Filters
   def filter_verb
-    @request_lines[0].split[0]
+    filter_verb = @request_lines[0].split[0]
   end
 
   def filter_path

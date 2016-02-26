@@ -75,7 +75,11 @@ module Responses
     </pre>"
   end
 
-  def game_stat_response
-
+  def get_game_response
+    "<head><b> Here are the game stats</b>\n</head>
+    <pre>
+    \n#{response_diagnostics}
+    </pre>"
   end
+
 end

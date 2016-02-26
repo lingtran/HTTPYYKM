@@ -1,11 +1,15 @@
 require 'faraday'
+require 'pry'
 # require '../lib/client'
 require '../lib/server'
 require '../lib/filters'
 require '../lib/responses'
+require_relative 'request_lines'
+require '../lib/response_status_code'
+require '../lib/redirect'
 require 'minitest/autorun'
 require 'minitest/pride'
-require_relative 'request_lines'
+
 
 class ServerTest < Minitest::Test
   include Responses, Filters, RequestLines
@@ -56,18 +60,19 @@ class ServerTest < Minitest::Test
 
   def test_response_to_start_game
     response = "Good luck!"
-    assert Faraday.get('http://127.0.0.1:9292/shutdown').body.include?(response)
-    # should print "Good luck!" and direct to start game?
+    assert Faraday.post('http://127.0.0.1:9292/start_game').body.include?(response)
   end
 
-  def test_response_for_game
-    skip
+  def test_response_for_get_game
+    response = "Here are the game stats"
+    assert Faraday.get('http://127.0.0.1:9292/game').body.include?(response)
     # how many guesses have been taken (default to 0)
     # tell what guess has been made if value is there, and its accuracy (too high, too low, or correct) -- perhaps need key-value to have various responses for input value
   end
 
-  def test_response_for_game_play
-    skip
+  def test_response_for_post_game
+    response = "Here are the game stats"
+    assert Faraday.post('http://127.0.0.1:9292/game').body.include?(response)
     # someone manually redirects?
   end
 end
