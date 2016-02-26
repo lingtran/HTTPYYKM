@@ -75,7 +75,7 @@ class ServerTest < Minitest::Test
 
   def test_status_code_for_start_game
     skip
-    # want to figure out a way to verify status code 
+    # want to figure out a way to verify status code
     @request_lines = start_game_request
     assert Faraday.post('http://127.0.0.1:9292/start_game').body.include?("302 Found")
   end

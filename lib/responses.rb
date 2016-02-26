@@ -69,15 +69,35 @@ module Responses
   end
 
   def start_game_response
+    @game = Game.new(@request_lines)
     "<head><b> Good luck!</b>\n</head>
     <pre>
     \n#{response_diagnostics}
     </pre>"
   end
 
-  def get_game_response
-    "<head><b> Here are the game stats</b>\n</head>
+  def initial_game_response
+    num_eval = @game.evaluate_number(@request_lines, @client)
+    "<head><b><u>Here are the game stats:</u></b>\n</head>
     <pre>
+    \n#{num_eval}
+    \nMost recent guess: What are you waiting for? Make a guess attempt!
+    \nGuesses made: You know you want to make a guess.
+    \n
+    \n#{response_diagnostics}
+    </pre>"
+  end
+
+  def get_game_response
+    num_eval = @game.evaluate_number(@request_lines, @client)
+    guesses = @game.guesses_made.join(", ")
+    recent_guess = @game.guess.join
+    "<head><b><u>Here are the game stats:</u></b>\n</head>
+    <pre>
+    \n#{num_eval}
+    \nMost recent guess: #{recent_guess}
+    \nGuesses made: #{guesses}
+    \n
     \n#{response_diagnostics}
     </pre>"
   end
