@@ -1,39 +1,34 @@
 require '../lib/server'
 
-class Game
-  attr_reader :guesses_made, :guess
+class Game < Server
 
-  def initialize(request_lines)
-    @guesses_made = guesses_made
+  def initialize(guess_input)
     @base_number = Random.rand(1..10)
+    @guess_input = guess_input
   end
 
-  def evaluate_number(request_lines, client)
-    guess = guess_getter(request_lines, client)
-    if guess == @base_number
+  def evaluate_number(guess_input)
+    if @guess_input == @base_number
       "You are correct!  Are you psychic?!?"
-    elsif
-      guess > 10 || guess < 1
+    elsif @guess_input > 10 || @guess_input < 1
       "Please enter a number between 1 and 10"
-    elsif guess > @base_number
-        "Your guess is too high"
-    elsif guess < @base_number
-        "Your guess is too low"
+    elsif @guess_input > @base_number
+      "Your guess is too high"
+    elsif @guess_input < @base_number
+      "Your guess is too low"
     else
       "Keep at it."
     end
   end
 
-  def guess_getter(request_lines, client)
-    content_length = request_lines[3].split(": ")
-    integer = content_length[1].to_i
-    guess = client.read(integer).split("\r\n")[3].to_i
-  end
 
-  def guess_stored(guess)
-    @guesses_made
-  end
+  # def guess_stored(guess)
+  #   @guesses_made
+  # end
 
+# want to bring back an array that stores numbers and shuffle number to a fixed index that can be retrieved in Server
+# potential reason for number in GET differing from POST -- request line come in differently, so they impact conversion integrity of Server::Responses#guess_input
+# array should mitigate aspect of the issue
 
 
   # def guess_count

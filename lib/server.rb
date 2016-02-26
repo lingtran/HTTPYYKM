@@ -5,7 +5,7 @@ require_relative 'responses'
 require_relative 'redirect'
 require_relative 'game'
 
-class Server < Game
+class Server
   include Responses, Filters, Redirect
 
   attr_reader :tcp_server, :client, :request_lines
@@ -32,7 +32,6 @@ class Server < Game
   def inspect_request
     puts "Got this request:"
     puts @request_lines.inspect
-    # puts @client.read(138)
   end
 
   def assign_response
@@ -51,22 +50,31 @@ class Server < Game
       word_search_response
     elsif filter_path == "/start_game"
       @status_code = "200 ok"
+      @game = Game.new(guess_input)
       start_game_response
     elsif filter_path == "/game"
       @status_code = "200 ok"
-      if @game_attempts < 0
-        initial_game_response
-      elsif @game_attempts > 1
-        get_game_response
-      end
-    elsif filter_verb == "POST" && filter_path.start_with?("/game?")
       @game_attempts += 1
-      @status_code = "302 Found"
-      get_game_response
+      get_game_response(guess_input)
+    # elsif filter_verb == "GET" && filter_path == "/game"
+    #   @status_code = "200 ok"
+    #   if @game_attempts == 0
+    #     initial_game_response
+    #   else
+    #     get_game_response(guess_input)
+    #   end
+    # elsif filter_verb == "POST" && filter_path.start_with?("/game?")
+    #   @game_attempts += 1
+    #   @status_code = "302 Found"
+    #   get_game_response(guess_input)
     else
       @status_code = "200 ok"
       root_response
     end
+  end
+
+  def assign_game_response(var)
+
   end
 
   def close_the_server

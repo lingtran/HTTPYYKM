@@ -36,6 +36,17 @@ module Responses
     end
   end
 
+  def guess_input
+    if filter_path == "GET"
+      @guess = nil
+    else
+    content_length = @request_lines[3].split(": ")
+    integer = content_length[1].to_i
+    @guess = @client.read(integer).split("\r\n")[3].to_i
+  end
+    @guess
+  end
+
   def root_response
     "<pre>\n#{response_diagnostics}</pre>"
   end
@@ -69,18 +80,16 @@ module Responses
   end
 
   def start_game_response
-    @game = Game.new(@request_lines)
     "<head><b> Good luck!</b>\n</head>
     <pre>
     \n#{response_diagnostics}
     </pre>"
   end
 
-  def initial_game_response(request_lines = nil, client)
-    num_eval = @game.evaluate_number(@request_lines, @client)
+  def initial_game_response
     "<head><b><u>Here are the game stats:</u></b>\n</head>
     <pre>
-    \n#{num_eval}
+    \nNil
     \nMost recent guess: What are you waiting for? Make a guess attempt!
     \nGuesses made: You know you want to make a guess.
     \n
@@ -88,13 +97,12 @@ module Responses
     </pre>"
   end
 
-  def get_game_response
-    num_eval = @game.evaluate_number(@request_lines, @client)
-    recent_guess = @game.guess_stored(guess)
+  def get_game_response(guess_input)
+    num_eval = @game.evaluate_number(guess_input)
     "<head><b><u>Here are the game stats:</u></b>\n</head>
     <pre>
     \n#{num_eval}
-    \nMost recent guess: #{recent_guess}
+    \nMost recent guess: #{@guess}
     \nGuess attempts: #{@game_attempts}
     \n
     \n#{response_diagnostics}
