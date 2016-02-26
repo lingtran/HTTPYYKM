@@ -1,7 +1,8 @@
 require 'socket'
 # require_relative 'request_parser'
 require 'pry'
-require_relative 'filters_responses'
+require_relative 'filters'
+require_relative 'responses'
 
 class Server
   include Responses, Filters
@@ -19,28 +20,31 @@ class Server
     @client = tcp_server.accept
     puts "Ready for a request!"
     @request_lines.clear
-    while line = @client.gets and !line.chomp.empty?
+    while line = @client.gets
       @request_lines << line.chomp
+      binding.pry
     end
   end
 
-# @client.read(138)
   def inspect_request
     puts "Got this request:"
     puts @request_lines.inspect
+    # puts @client.read(138)
   end
 
   def assign_response
     path_finder = @request_lines.fetch(0)
-    if path_finder.include?("/hello")
-      @hello_counter +=1 # counter is going in odds AGAIN. investigate why.
+    if path_finder.include?("/shutdown")
+      shutdown_response
+    elsif path_finder.include?("/hello")
+      @hello_counter +=1
       hello_response
     elsif path_finder.include?("/datetime")
       datetime_response
     elsif path_finder.include?("/word_search")
       word_search_response
-    elsif path_finder.include?("/shutdown")
-      shutdown_response
+    elsif path_finder.include?("/start_game")
+      start_game_response
     # elsif game counter response
     # elsif other game response
     else
@@ -71,7 +75,7 @@ class Server
       inspect_request
       send_response
       @visited += 1
-      break if assign_response == shutdown_response
+      break if @request_lines.fetch(0).include?("/shutdown")
     end
     close_the_server
     @client.close

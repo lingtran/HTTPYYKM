@@ -1,7 +1,8 @@
 require 'faraday'
 # require '../lib/client'
 require '../lib/server'
-require '../lib/filters_responses'
+require '../lib/filters'
+require '../lib/responses'
 require 'minitest/autorun'
 require 'minitest/pride'
 require_relative 'request_lines'
@@ -32,6 +33,9 @@ class ServerTest < Minitest::Test
   def test_can_filter_verb
     @request_lines = root_request
     assert_equal "GET", filter_verb
+
+    @request_lines = start_game_request
+    assert_equal "POST", filter_verb
   end
 
   def test_can_filter_protocol
@@ -61,5 +65,10 @@ class ServerTest < Minitest::Test
 
     @request_lines = word_search_request_2
     assert_equal "PAWSOME is not a known word", word_value_verification
+  end
+
+  def test_can_filter_start_game_path
+    @request_lines = start_game_request
+    assert_equal "/start_game", filter_path
   end
 end

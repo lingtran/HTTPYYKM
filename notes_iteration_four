@@ -19,3 +19,34 @@ key = guess, value = 20
  "",
  "20",
  "------WebKitFormBoundaryqkTI4D7BEAOGOaHr--"]
+
+"20" = index 17
+
+order seems to be [POST > /start_game] --> [POST > /game] --> [GET > /game]
+
+URLs needed, potentially another module to hold the URLS
+ - GAME STATS >>> verb = Get, path = /game
+ - PLAY GAME >>> verb = POST, path = /game
+
+Status codes
+
+Game class
+- guess_counter, which we default to 0
+- rand = randomly selected number
+- compare guessed_number to rand
+- place conditional responses based on comparison
+
+Response module
+- Takes conditional response from Game class and also print out recently guessed number
+- print out guess_counter
+
+Server class
+- Assign game response
+
+Interaction model
+- [POST > /start_game] -- need to change status_code to "301 Moved Permanently"
+- get redirected to [Post > /game]
+- player puts in guess key and value (guess param, number)
+- redirects client (POSTMAN) to go to GET > /game
+- player can see stats which includes their guess, accuracy, and total number of guesses
+-
