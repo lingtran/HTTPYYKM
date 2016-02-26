@@ -44,7 +44,6 @@ class ServerTest < Minitest::Test
     response_2 = "Path: /hello"
     assert Faraday.get('http://127.0.0.1:9292/hello').body.include?(response_1)
     assert Faraday.get('http://127.0.0.1:9292/hello').body.include?(response_2)
-
   end
 
   def test_response_with_date_time
@@ -53,7 +52,7 @@ class ServerTest < Minitest::Test
   end
 
   def test_response_with_shutdown
-    skip #make new file for testing shutdown
+    skip #make new file for testing shutdown in isolation
     response = "Total Requests:"
     assert Faraday.get('http://127.0.0.1:9292/shutdown').body.include?(response)
   end

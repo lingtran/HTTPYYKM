@@ -1,5 +1,4 @@
 require 'faraday'
-# require '../lib/client'
 require '../lib/server'
 require '../lib/filters'
 require '../lib/responses'
